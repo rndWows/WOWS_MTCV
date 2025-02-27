@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bản Mô Tả Công Việc</title>
+    <link rel="shortcut icon" href="https://rndwows.github.io/WOWS_KPI/WOWS-GROUP-logo.png" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+
+            .a4-page {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .print\:hidden {
+                display: none !important;
+            }
+        }
+
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 5mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+        }
+
+        @media screen {
+            body {
+                background: rgb(204, 204, 204);
+            }
+
+            .a4-page {
+                margin: 2cm auto;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <!-- Add print button -->
+    <div class="fixed top-4 right-4 print:hidden">
+
+        <button onclick="window.print()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition-colors mb-2   ">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            In tài liệu
+        </button>
+
+        <!-- <button onclick="downloadPDF()"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition-colors mb-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Tải PDF
+        </button> -->
+    </div>
+
+    <div class="a4-page">
+        <div id="jobDescription">
+            <!-- Content will be dynamically populated -->
+        </div>
+    </div>
+
+    <script>
+        const APP_ID = '3e52d6a8-5f0c-4311-8f04-f2e4c5eaf366';
+        const API_KEY = 'V2-0ukvc-P0SjQ-41yh0-XdYY7-PNhYI-C7GkF-mSQm4-zPrx8';
+
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // function downloadPDF() {
+        //     // Show loading indicator
+        //     const loadingIndicator = document.createElement('div');
+        //     loadingIndicator.className = 'fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50';
+        //     loadingIndicator.innerHTML = `
+        //     <div class="bg-white p-5 rounded-lg shadow-lg flex flex-col items-center">
+        //         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mb-3"></div>
+        //         <p class="text-gray-700">Đang tạo PDF...</p>
+        //     </div>
+        // `;
+        //     document.body.appendChild(loadingIndicator);
+
+        //     // Get the content element
+        //     const element = document.querySelector('.a4-page');
+
+        //     // Use html2canvas to render the element
+        //     html2canvas(element, {
+        //         scale: 2, // Higher scale for better quality
+        //         useCORS: true,
+        //         logging: false,
+        //         allowTaint: true
+        //     }).then(canvas => {
+        //         // Initialize jsPDF
+        //         const { jsPDF } = window.jspdf;
+
+        //         // A4 size: 210 x 297 mm
+        //         const pdf = new jsPDF('p', 'mm', 'a4');
+
+        //         // Get canvas dimensions
+        //         const imgWidth = 210; // A4 width
+        //         const pageHeight = 297; // A4 height
+        //         const imgHeight = canvas.height * imgWidth / canvas.width;
+
+        //         // Get the image data from canvas
+        //         const imgData = canvas.toDataURL('image/png');
+
+        //         // Add image to PDF
+        //         let heightLeft = imgHeight;
+        //         let position = 0;
+
+        //         // Add first page
+        //         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        //         heightLeft -= pageHeight;
+
+        //         // Add subsequent pages if needed
+        //         while (heightLeft > 0) {
+        //             position = heightLeft - imgHeight;
+        //             pdf.addPage();
+        //             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        //             heightLeft -= pageHeight;
+        //         }
+
+        //         // Get filename based on MVB parameter or default
+        //         const mvb = getUrlParameter('mvb') || 'document';
+        //         const filename = `BanMoTaCongViec_${mvb}.pdf`;
+
+        //         // Save PDF
+        //         pdf.save(filename);
+
+
+        //         // Remove loading indicator
+        //         document.body.removeChild(loadingIndicator);
+        //     }).catch(error => {
+        //         console.error('Error generating PDF:', error);
+        //         alert('Có lỗi khi tạo PDF. Vui lòng thử lại hoặc sử dụng chức năng In để lưu PDF.');
+
+
+        //         // Remove loading indicator
+        //         document.body.removeChild(loadingIndicator);
+        //     });
+        // }
+
+
+        window.onload = async () => {
+            try {
+                const mvb = getUrlParameter('mvb');
+                if (mvb) {
+                    showLoading();
+                    const jobData = await fetchJobDescription(mvb);
+                    const tasksData = await fetchTasks(jobData);
+                    const tasksDataBC = await fetchBaoCaoTasks(jobData);
+                    const tasksDataYC = await fetchYeuCauTasks(jobData);
+
+                    if (jobData) {
+                        renderJobDescription(jobData);
+                        if (tasksData) {
+                            renderTasks(tasksData);
+                            renderTasksCT(tasksData, jobData);
+                            if (tasksDataBC) {
+                                renderTasksBC(tasksDataBC);
+                                if (tasksDataYC) {
+                                    renderTasksYC(tasksDataYC);
+                                } else {
+                                    throw new Error('Không tìm thấy dữ liệu yêu cầu');
+                                }
+                            } else {
+                                throw new Error('Không tìm thấy dữ liệu báo cáo');
+                            }
+                        }
+                        else {
+                            throw new Error('Không tìm thấy dữ liệu nhiệm vụ');
+                        }
+                    } else {
+                        throw new Error('Không tìm thấy dữ liệu');
+                    }
+                } else {
+                    throw new Error('Vui lòng cung cấp mã văn bản trong URL');
+                }
+            } catch (error) {
+                showError(error);
+            }
+        };
+
+        async function fetchJobDescription(mvb) {
+            try {
+                const response = await fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/MTCV_Theo_Chuc_Vu/Action`, {
+                    method: 'POST',
+                    headers: {
+                        'applicationAccessKey': API_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "Action": "Find",
+                        "Properties": {
+                            "Selector": `Filter(MTCV_Theo_Chuc_Vu, [Ma_van_ban] = '${mvb}')`
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                return data[0];
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return null;
+            }
+        }
+
+        async function fetchTasks(jobData) {
+            try {
+                const response = await fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/Cai_Dat_Nhiem_Vu/Action`, {
+                    method: 'POST',
+                    headers: {
+                        'applicationAccessKey': API_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "Action": "Find",
+                        "Properties": {
+                            "Selector": `Filter(Cai_Dat_Nhiem_Vu,IN('${jobData.ID_Chuc_vu}',[Chuc_vu]))`
+                        }
+                    })
+                });
+
+                const tasksData = await response.json();
+                return tasksData;
+            } catch (error) {
+                console.error('Error fetching tasks:', error);
+                return null;
+            }
+        }
+
+        // Add this function to fetch detailed tasks
+        async function fetchDetailedTasks(task, jobData) {
+            const cv = task.Chuc_vu.split(' , ').map(cv => `'${cv}'`).join(',');
+            // console.log(cv);
+            try {
+                const response = await fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/Cai_Dat_Cong_Viec_CT/Action`, {
+                    method: 'POST',
+                    headers: {
+                        'applicationAccessKey': API_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "Action": "Find",
+                        "Properties": {
+                            "Selector": `Filter(Cai_Dat_Cong_Viec_CT,AND([Ten_nhiem_vu]='${task.ID_Nhiem_vu}', [Chuc_danh_phu_trach] = '${jobData.ID_Chuc_vu}'))`
+                        }
+                    })
+                });
+
+                const detailedTasksData = await response.json();
+                return detailedTasksData;
+            } catch (error) {
+                console.error('Error fetching detailed tasks:', error);
+                return null;
+            }
+        }
+
+        async function fetchBaoCaoTasks(jobData) {
+            try {
+                const response = await fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/Cai_Dat_Bao_Cao/Action`, {
+                    method: 'POST',
+                    headers: {
+                        'applicationAccessKey': API_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "Action": "Find",
+                        "Properties": {
+                            "Selector": `Filter(CAI_DAT_BAO_CAO, [Chuc_danh_phu_trach] = '${jobData.ID_Chuc_vu}')`
+                        }
+                    })
+                });
+
+                const detailedTasksData = await response.json();
+                return detailedTasksData;
+            } catch (error) {
+                console.error('Error fetching detailed tasks:', error);
+                return null;
+            }
+        }
+
+        async function fetchYeuCauTasks(jobData) {
+            try {
+                const response = await fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/Cai_Dat_Yeu_Cau/Action`, {
+                    method: 'POST',
+                    headers: {
+                        'applicationAccessKey': API_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "Action": "Find",
+                        "Properties": {
+                            "Selector": `Filter(Cai_Dat_Yeu_Cau, [ID_Chuc_vu] = '${jobData.ID_Chuc_vu}')`
+                        }
+                    })
+                });
+
+                const detailedTasksData = await response.json();
+                return detailedTasksData;
+            } catch (error) {
+                console.error('Error fetching detailed tasks:', error);
+                return null;
+            }
+        }
+
+        function renderJobDescription(data) {
+            const template = `
+                <div class="flex justify-between items-start mb-8">
+                    <div class="flex items-center">
+                        <img src="/logowows.jpg" alt="WOWS Group Logo" class="w-32 h-32">
+                    </div>
+                    <div class="text-right">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="text-right">Mã văn bản:</div>
+                            <div>${data.Ma_van_ban}</div>
+                            <div class="text-right">Ngày cập nhật:</div>
+                            <div>${data.Ngay_cap_nhat}</div>
+                            <div class="text-right">Lần sửa đổi:</div>
+                            <div>00</div>
+                            <div class="text-right">Số trang:</div>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center font-bold text-xl mb-6">
+                    <h1>BẢNG MÔ TẢ CÔNG VIỆC</h1>
+                    <h2 class="mt-2">${data.Chuc_vu}</h2>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p><span class="font-semibold">Vị trí công việc:</span> ${data.Chuc_vu}</p>
+                        
+                    </div>
+                    <div>
+                        <p><span class="font-semibold">Địa điểm làm việc:</span> ${data.Dia_diem_lam_viec}</p>
+                        <p><span class="font-semibold">Bộ phận/ phòng ban:</span> ${data.Phong_ban}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <p class="font-semibold">Cấp quản lý trực tiếp:</p>
+                        <p>${data.Cap_quan_ly_TT}</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold">Cấp quản lý gián tiếp:</p>
+                        <p>${data.Cap_quan_ly_GT}</p>
+                    </div>
+                </div>
+
+                <!-- Thêm bảng nhiệm vụ -->
+                <div class="">
+                    <h3 class="font-bold text-lg bg-red-200 py-2 px-4">I. NHIỆM VỤ CHÍNH</h3>
+                    <table class="w-full border-collapse border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-300 px-4 py-2 text-center w-16">STT</th>
+                                <th class="border border-gray-300 px-4 py-2">Nhiệm vụ</th>
+                                <th class="border border-gray-300 px-4 py-2 w-40 text-center">Định kỳ báo cáo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskTableBody">
+                            <!-- Tasks will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Thêm bảng công việc ct -->
+                <div class="">
+                    <h3 class="font-bold text-lg bg-red-200 py-2 px-4">II. NHIỆM VỤ CHI TIẾT</h3>
+                    <table class="w-full border-collapse border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-300 px-4 py-2 text-center w-12">STT</th>
+                                <th class="border border-gray-300 px-4 py-2">Nhiệm vụ</th>
+                                <th class="border border-gray-300 px-4 py-2 text-center">Bằng chứng/ kết quả công việc</th>
+                                <th class="border border-gray-300 px-4 py-2 text-center w-50">Định kỳ báo cáo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskTableBodyCT">
+                            <!-- Tasks will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Thêm bảng báo cáo -->
+                <div class="">
+                    <h3 class="font-bold text-lg bg-red-200 py-2 px-4">III. CÁC BÁO CÁO CÔNG VIỆC</h3>
+                    <table class="w-full border-collapse border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-300 px-4 py-2 text-center w-12">STT</th>
+                                <th class="border border-gray-300 px-4 py-2">TÊN BÁO CÁO</th>
+                                <th class="border border-gray-300 px-4 py-2 text-center">HÌNH THỨC LƯU TRỮ</th>
+                                <th class="border border-gray-300 px-4 py-2 text-center">HÌNH THỨC BÁO CÁO</th>
+                                <th class="border border-gray-300 px-4 py-2 text-center">DEADLINE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskTableBodyBC">
+                            <!-- Reports will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="">
+                    <h3 class="font-bold text-lg bg-red-200 py-2 px-4">IV. TIÊU CHUẨN ĐỐI VỚI NGƯỜI THỰC HIỆN CÔNG VIỆC</h3>
+                    <table class="w-full border-collapse border border-gray-300">
+                        <thead>
+                            
+                        </thead>
+                        <tbody id="taskTableBodyYC">
+                            <!-- Reports will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-8 grid grid-cols-4 gap-4 text-center">
+                    <div>
+                        <p class="font-bold">Ban giám đốc</p>
+                        <p class="italic">(Ký, ghi rõ họ tên)</p>
+                        <div class="h-20"></div>
+                    </div>
+                    <div>
+                        <p class="font-bold">Người biên soạn</p>
+                        <p class="italic">(Ký, ghi rõ họ tên)</p>
+                        <div class="h-20"></div>
+                    </div>
+                    <div>
+                        <p class="font-bold">Người giao việc</p>
+                        <p class="italic">(Ký, ghi rõ họ tên)</p>
+                        <div class="h-20"></div>
+                    </div>
+                    <div>
+                        <p class="font-bold">Người nhận việc</p>
+                        <p class="italic">(Ký, ghi rõ họ tên)</p>
+                        <div class="h-20"></div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('jobDescription').innerHTML = template;
+
+            updatePageCount();
+        }
+
+        function renderTasks(tasks) {
+            const tableBody = document.getElementById('taskTableBody');
+            if (!tableBody) return;
+
+            const tasksHTML = tasks.map((task, index) => `
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${index + 1}</td>
+                    <td class="border border-gray-300 px-4 py-2">${task.Ten_nhiem_vu}</td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${task.Dinh_ky_bao_cao}</td>
+                </tr>
+            `).join('');
+
+            tableBody.innerHTML = tasksHTML;
+        }
+
+        // Modify the renderTasks function to display hierarchical tasks
+        async function renderTasksCT(tasks, jobData) {
+            const tableBody = document.getElementById('taskTableBodyCT');
+            if (!tableBody) return;
+
+            // Clear previous content
+            tableBody.innerHTML = '';
+
+            // Process each main task
+            for (let i = 0; i < tasks.length; i++) {
+                const task = tasks[i];
+
+                // Create row for main task
+                const mainTaskRow = document.createElement('tr');
+                mainTaskRow.className = 'bg-blue-50';
+                mainTaskRow.innerHTML = `
+                    <td class="border border-gray-300 px-4 py-2 text-center font-semibold">${i + 1}</td>
+                    <td class="border border-gray-300 px-4 py-2 font-semibold">- ${task.Ten_nhiem_vu}</td>
+                    <td></td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${task.Dinh_ky_bao_cao || 'Hàng tháng'}</td>
+                `;
+                tableBody.appendChild(mainTaskRow);
+
+                // Fetch and display subtasks
+                const detailedTasks = await fetchDetailedTasks(task, jobData);
+
+                if (detailedTasks && detailedTasks.length > 0) {
+                    for (let j = 0; j < detailedTasks.length; j++) {
+                        const subTask = detailedTasks[j];
+                        const subTaskRow = document.createElement('tr');
+                        subTaskRow.innerHTML = `
+                    <td class="border border-gray-300 px-4 py-2 text-center">${i + 1}.${j + 1}</td>
+                    <td class="border border-gray-300 px-4 py-2">- ${subTask.Ten_cong_viec}</td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${subTask.BC_KQ_cong_viec || ''}</td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${subTask.Dinh_ky_bao_cao || ''}</td>
+                `;
+                        tableBody.appendChild(subTaskRow);
+                    }
+                }
+            }
+
+            // Update page count after all content is rendered
+            updatePageCount();
+        }
+
+        function renderTasksBC(tasks) {
+
+            const tableBody = document.getElementById('taskTableBodyBC');
+            if (!tableBody) return;
+
+            const tasksHTML = tasks.map((task, index) => `
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${index + 1}</td>
+                    <td class="border border-gray-300 px-4 py-2">${task.Ten_bao_cao || ''}</td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${task.Hinh_thuc_luu_tru || ''}</td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${task.hinh_thuc_bao_cao || ''}</td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${task.Dinh_ky || ''}</td>
+                </tr>
+            `).join('');
+
+            tableBody.innerHTML = tasksHTML;
+        }
+
+        function renderTasksYC(tasks) {
+
+            const tableBody = document.getElementById('taskTableBodyYC');
+            if (!tableBody) return;
+
+            const tasksHTML = tasks.map((task, index) => `
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 text-center w-12">${index + 1}</td>
+                    <td class="border border-gray-300 px-4 py-2" style="width: 168px">${task.Yeu_cau || ''}</td>
+                    <td class="border border-gray-300 px-4 py-2">${task.CT_Yeu_cau || ''}</td>
+                </tr>
+            `).join('');
+
+            tableBody.innerHTML = tasksHTML;
+        }
+
+        function showLoading() {
+            document.getElementById('jobDescription').innerHTML = `
+                <div class="flex justify-center items-center h-64">
+                    <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+                </div>
+            `;
+        }
+
+        function showError(error) {
+            document.getElementById('jobDescription').innerHTML = `
+                <div class="text-red-500 text-center p-4">
+                    <p>Có lỗi xảy ra khi tải dữ liệu: ${error.message}</p>
+                </div>
+            `;
+        }
+
+        function countPages() {
+            // Get the content area height
+            const contentElement = document.getElementById('jobDescription');
+            const contentHeight = contentElement.offsetHeight;
+
+            // Get the page height (A4 page height in pixels minus margins)
+            // A4 is 297mm tall, and we're using 5mm padding on each side
+            const pageHeight = 287 * 3.78; // Approximate conversion from mm to pixels
+
+            // Calculate number of pages
+            const pageCount = Math.ceil(contentHeight / pageHeight);
+
+            // Update the page count in the document
+            const pageCountElements = document.querySelectorAll('.page-count');
+            pageCountElements.forEach(element => {
+                element.textContent = pageCount;
+            });
+
+            return pageCount;
+        }
+
+        // Call this function after the content is rendered
+        function updatePageCount() {
+            // Wait for content to be fully rendered
+            setTimeout(() => {
+                const pages = countPages();
+
+                // Update the page count in the header information
+                const pageInfoElement = document.querySelector('.grid.grid-cols-2.gap-4.text-sm');
+                if (pageInfoElement) {
+                    const pageCountCell = pageInfoElement.children[pageInfoElement.children.length - 1];
+                    if (pageCountCell) {
+                        pageCountCell.textContent = pages;
+                    }
+                }
+            }, 500);
+        }
+    </script>
+</body>
+
+</html>
