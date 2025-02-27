@@ -67,15 +67,6 @@
             </svg>
             In tài liệu
         </button>
-
-        <!-- <button onclick="downloadPDF()"
-            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition-colors mb-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            Tải PDF
-        </button> -->
     </div>
 
     <div class="a4-page">
@@ -92,79 +83,6 @@
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
         }
-
-        // function downloadPDF() {
-        //     // Show loading indicator
-        //     const loadingIndicator = document.createElement('div');
-        //     loadingIndicator.className = 'fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50';
-        //     loadingIndicator.innerHTML = `
-        //     <div class="bg-white p-5 rounded-lg shadow-lg flex flex-col items-center">
-        //         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mb-3"></div>
-        //         <p class="text-gray-700">Đang tạo PDF...</p>
-        //     </div>
-        // `;
-        //     document.body.appendChild(loadingIndicator);
-
-        //     // Get the content element
-        //     const element = document.querySelector('.a4-page');
-
-        //     // Use html2canvas to render the element
-        //     html2canvas(element, {
-        //         scale: 2, // Higher scale for better quality
-        //         useCORS: true,
-        //         logging: false,
-        //         allowTaint: true
-        //     }).then(canvas => {
-        //         // Initialize jsPDF
-        //         const { jsPDF } = window.jspdf;
-
-        //         // A4 size: 210 x 297 mm
-        //         const pdf = new jsPDF('p', 'mm', 'a4');
-
-        //         // Get canvas dimensions
-        //         const imgWidth = 210; // A4 width
-        //         const pageHeight = 297; // A4 height
-        //         const imgHeight = canvas.height * imgWidth / canvas.width;
-
-        //         // Get the image data from canvas
-        //         const imgData = canvas.toDataURL('image/png');
-
-        //         // Add image to PDF
-        //         let heightLeft = imgHeight;
-        //         let position = 0;
-
-        //         // Add first page
-        //         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        //         heightLeft -= pageHeight;
-
-        //         // Add subsequent pages if needed
-        //         while (heightLeft > 0) {
-        //             position = heightLeft - imgHeight;
-        //             pdf.addPage();
-        //             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        //             heightLeft -= pageHeight;
-        //         }
-
-        //         // Get filename based on MVB parameter or default
-        //         const mvb = getUrlParameter('mvb') || 'document';
-        //         const filename = `BanMoTaCongViec_${mvb}.pdf`;
-
-        //         // Save PDF
-        //         pdf.save(filename);
-
-
-        //         // Remove loading indicator
-        //         document.body.removeChild(loadingIndicator);
-        //     }).catch(error => {
-        //         console.error('Error generating PDF:', error);
-        //         alert('Có lỗi khi tạo PDF. Vui lòng thử lại hoặc sử dụng chức năng In để lưu PDF.');
-
-
-        //         // Remove loading indicator
-        //         document.body.removeChild(loadingIndicator);
-        //     });
-        // }
-
 
         window.onload = async () => {
             try {
