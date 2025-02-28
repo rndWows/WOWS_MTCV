@@ -86,6 +86,21 @@
             return urlParams.get(name);
         }
 
+        function showLoading() {
+            document.getElementById('jobDescription').innerHTML = `
+                <div class="flex justify-center items-center h-64">
+                    <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+                </div>
+            `;
+        }
+
+        function hideLoading() {
+            const loadingElement = document.querySelector('#jobDescription .flex.justify-center.items-center');
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+        }
+
         window.onload = async () => {
             try {
                 const mvb = getUrlParameter('mvb');
@@ -105,6 +120,7 @@
                                 renderTasksBC(tasksDataBC);
                                 if (tasksDataYC) {
                                     renderTasksYC(tasksDataYC);
+                                    hideLoading();
                                 } else {
                                     throw new Error('Không tìm thấy dữ liệu yêu cầu');
                                 }
@@ -180,10 +196,10 @@
             return fecthTable(table, Selector);
         }
 
-        async function fetchDetailedTasks(task, jobData) {
+        async function fetchDetailedTasks(jobData) {
             // const cv = task.Chuc_vu.split(' , ').map(cv => `'${cv}'`).join(',');
             const table = "Cai_Dat_Cong_Viec_CT";
-            const Selector = `Filter(${table},AND([Ten_nhiem_vu]='${task.ID_Nhiem_vu}', [Chuc_danh_phu_trach] = '${jobData.ID_Chuc_vu}'))`;
+            const Selector = `Filter(${table},[Chuc_danh_phu_trach] = '${jobData.ID_Chuc_vu}')`;
             return fecthTable(table, Selector);
         }
 
@@ -361,6 +377,8 @@
         // Modify the renderTasks function to display hierarchical tasks
         async function renderTasksCT(tasks, jobData) {
             const tableBody = document.getElementById('taskTableBodyCT');
+            // Fetch and display subtasks
+            const detailedTask = await fetchDetailedTasks(jobData);
             if (!tableBody) return;
 
             // Clear previous content
@@ -381,8 +399,8 @@
                 `;
                 tableBody.appendChild(mainTaskRow);
 
-                // Fetch and display subtasks
-                const detailedTasks = await fetchDetailedTasks(task, jobData);
+                const detailedTasks = detailedTask.filter(ct => ct.Ten_nhiem_vu === task.ID_Nhiem_vu);
+
 
                 if (detailedTasks && detailedTasks.length > 0) {
                     for (let j = 0; j < detailedTasks.length; j++) {
@@ -435,14 +453,6 @@
             `).join('');
 
             tableBody.innerHTML = tasksHTML;
-        }
-
-        function showLoading() {
-            document.getElementById('jobDescription').innerHTML = `
-                <div class="flex justify-center items-center h-64">
-                    <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-                </div>
-            `;
         }
 
         function showError(error) {
