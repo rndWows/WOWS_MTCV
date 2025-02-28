@@ -4,12 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng Mô Tả Công Việc</title>
+    <title>Bản Mô Tả Công Việc</title>
     <link rel="shortcut icon" href="https://rndwows.github.io/WOWS_MTCV/WOWS-GROUP-logo.png" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
     <style>
         @page {
             size: A4;
@@ -56,6 +59,7 @@
 </head>
 
 <body class="bg-gray-100">
+    <!-- Add print button -->
     <div class="fixed top-4 right-4 print:hidden">
 
         <button onclick="window.print()"
@@ -67,7 +71,6 @@
             In tài liệu
         </button>
     </div>
-
     <div class="a4-page">
         <div id="jobDescription">
             <!-- Content will be dynamically populated -->
@@ -147,9 +150,9 @@
             }
         }
 
-        async function fetchTasks(jobData) {
+        async function fecthTable(table, Selector) {
             try {
-                const response = await fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/Cai_Dat_Nhiem_Vu/Action`, {
+                const response = await fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/${table}/Action`, {
                     method: 'POST',
                     headers: {
                         'applicationAccessKey': API_KEY,
@@ -158,7 +161,7 @@
                     body: JSON.stringify({
                         "Action": "Find",
                         "Properties": {
-                            "Selector": `Filter(Cai_Dat_Nhiem_Vu,IN('${jobData.ID_Chuc_vu}',[Chuc_vu]))`
+                            "Selector": Selector
                         }
                     })
                 });
@@ -171,79 +174,29 @@
             }
         }
 
-        // Add this function to fetch detailed tasks
-        async function fetchDetailedTasks(task, jobData) {
-            const cv = task.Chuc_vu.split(' , ').map(cv => `'${cv}'`).join(',');
-            // console.log(cv);
-            try {
-                const response = await fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/Cai_Dat_Cong_Viec_CT/Action`, {
-                    method: 'POST',
-                    headers: {
-                        'applicationAccessKey': API_KEY,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "Action": "Find",
-                        "Properties": {
-                            "Selector": `Filter(Cai_Dat_Cong_Viec_CT,AND([Ten_nhiem_vu]='${task.ID_Nhiem_vu}', [Chuc_danh_phu_trach] = '${jobData.ID_Chuc_vu}'))`
-                        }
-                    })
-                });
+        async function fetchTasks(jobData) {
+            const table = "Cai_Dat_Nhiem_Vu";
+            const Selector = `Filter(${table},IN('${jobData.ID_Chuc_vu}',[Chuc_vu]))`;
+            return fecthTable(table, Selector);
+        }
 
-                const detailedTasksData = await response.json();
-                return detailedTasksData;
-            } catch (error) {
-                console.error('Error fetching detailed tasks:', error);
-                return null;
-            }
+        async function fetchDetailedTasks(task, jobData) {
+            // const cv = task.Chuc_vu.split(' , ').map(cv => `'${cv}'`).join(',');
+            const table = "Cai_Dat_Cong_Viec_CT";
+            const Selector = `Filter(${table},AND([Ten_nhiem_vu]='${task.ID_Nhiem_vu}', [Chuc_danh_phu_trach] = '${jobData.ID_Chuc_vu}'))`;
+            return fecthTable(table, Selector);
         }
 
         async function fetchBaoCaoTasks(jobData) {
-            try {
-                const response = await fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/Cai_Dat_Bao_Cao/Action`, {
-                    method: 'POST',
-                    headers: {
-                        'applicationAccessKey': API_KEY,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "Action": "Find",
-                        "Properties": {
-                            "Selector": `Filter(CAI_DAT_BAO_CAO, [Chuc_danh_phu_trach] = '${jobData.ID_Chuc_vu}')`
-                        }
-                    })
-                });
-
-                const detailedTasksData = await response.json();
-                return detailedTasksData;
-            } catch (error) {
-                console.error('Error fetching detailed tasks:', error);
-                return null;
-            }
+            const table = "Cai_Dat_Bao_Cao";
+            const Selector = `Filter(${table},[Chuc_danh_phu_trach] = '${jobData.ID_Chuc_vu}')`;
+            return fecthTable(table, Selector);
         }
 
         async function fetchYeuCauTasks(jobData) {
-            try {
-                const response = await fetch(`https://api.appsheet.com/api/v2/apps/${APP_ID}/tables/Cai_Dat_Yeu_Cau/Action`, {
-                    method: 'POST',
-                    headers: {
-                        'applicationAccessKey': API_KEY,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "Action": "Find",
-                        "Properties": {
-                            "Selector": `Filter(Cai_Dat_Yeu_Cau, [ID_Chuc_vu] = '${jobData.ID_Chuc_vu}')`
-                        }
-                    })
-                });
-
-                const detailedTasksData = await response.json();
-                return detailedTasksData;
-            } catch (error) {
-                console.error('Error fetching detailed tasks:', error);
-                return null;
-            }
+            const table = "Cai_Dat_Yeu_Cau";
+            const Selector = `Filter(${table},[ID_Chuc_vu] = '${jobData.ID_Chuc_vu}')`;
+            return fecthTable(table, Selector);
         }
 
         function renderJobDescription(data) {
@@ -282,14 +235,16 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="grid grid-cols-2 gap-4 mb-3">
                     <div>
-                        <p class="font-semibold">Cấp quản lý trực tiếp:</p>
-                        <p>${data.Cap_quan_ly_TT}</p>
+                        <p><span class="font-semibold">Cấp quản lý trực tiếp:</span> ${data.Cap_quan_ly_TT}</p>
+                        <!-- <p class="font-semibold">Cấp quản lý trực tiếp:</p>
+                        <p style="margin-left: 5mm">${data.Cap_quan_ly_TT}</p> -->
                     </div>
                     <div>
-                        <p class="font-semibold">Cấp quản lý gián tiếp:</p>
-                        <p>${data.Cap_quan_ly_GT}</p>
+                        <p><span class="font-semibold">Cấp quản lý gián tiếp:</span> ${data.Cap_quan_ly_GT}</p>
+                        <!-- <p class="font-semibold">Cấp quản lý gián tiếp:</p>
+                        <p style="margin-left: 5mm">${data.Cap_quan_ly_GT}</p> -->
                     </div>
                 </div>
 
@@ -499,7 +454,7 @@
         }
 
         function countPages() {
-            
+            // Get the content area height
             const contentElement = document.getElementById('jobDescription');
             const contentHeight = contentElement.offsetHeight;
 
