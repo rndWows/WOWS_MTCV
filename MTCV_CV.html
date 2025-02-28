@@ -88,8 +88,24 @@
 
         function showLoading() {
             document.getElementById('jobDescription').innerHTML = `
-                <div class="flex justify-center items-center h-64">
-                    <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+                <div class="flex flex-col justify-center items-center h-96">
+                    <div class="relative">
+                        <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                        <div class="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-r-red-400 rounded-full animate-spin"
+                            style="animation-duration: 1.5s;"></div>
+                    </div>
+                    
+                    <!-- Thông báo loading -->
+                    <div class="mt-6 text-center">
+                        <p class="text-lg font-semibold text-gray-700">Đang tải dữ liệu...</p>
+                        <p class="text-sm text-gray-500 mt-2">Hệ thống đang chuẩn bị thông tin</p>
+                    </div>
+                    
+                    <!-- Thanh tiến trình -->
+                    <div class="w-64 h-2 bg-gray-200 rounded-full mt-6 overflow-hidden">
+                        <div class="h-full bg-blue-600 rounded-full animate-pulse"
+                            style="animation-duration: 1.5s; width: 100%;"></div>
+                    </div>
                 </div>
             `;
         }
