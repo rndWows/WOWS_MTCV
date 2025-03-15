@@ -233,27 +233,36 @@
 
         function renderJobDescription(data) {
             const template = `
-                <div class="flex justify-between items-start mb-8">
-                    <div class="flex items-center">
-                        <img src="https://rndwows.github.io/WOWS_MTCV/logowows.jpg" alt="WOWS Group Logo" style="width: 180px; height: 180px;">
-                    </div>
-                    
-                    <div class="text-left">
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div class="text-right">Tên công ty:</div>
-                            <div><b>Công ty cổ phần tập đoàn Wows</b></div>
-                            <div class="text-right">Mã số thuế:</div>
-                            <div>3702278001</div>
-                            <div class="text-right">Mã văn bản:</div>
-                            <div>${data.Ma_van_ban}</div>
-                            <div class="text-right">Ngày cập nhật:</div>
-                            <div>${data.Ngay_cap_nhat}</div>
-                            <div class="text-right">Lần sửa đổi:</div>
-                            <div>00</div>
-                            <div class="text-right">Số trang:</div>
-                            <div></div>
-                        </div>
-                    </div>
+                <div>
+                    <table style="width: 100%;">
+                        <tr>
+                            <th rowspan="5"> <img src="https://rndwows.github.io/WOWS_MTCV/logowows.jpg"
+                                    style="width: 120px; margin: -18px"></th>
+                            <th style="width: 50%;" rowspan="5" class="center">
+                                <h6 class=" bold">CÔNG TY CỔ PHẦN TẬP ĐOÀN WOWS</h6>
+
+                            </th>
+                            <td style="font-size: 12px;">Mã số thuế: </th>
+                            <td style="font-size: 12px;"><span>3702278001</span></th>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 12px;"> Mã văn bản:</td>
+                            <td style="font-size: 12px;">${data.Ma_van_ban}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 12px;"> Ngày cập nhật:</td>
+                            <td style="font-size: 12px;">${data.Ngay_cap_nhat}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 12px;"> Lần sửa đổi:</td>
+                            <td style="font-size: 12px;">00</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 12px;"> Số trang:</td>
+                            <td id="pageCount" style="font-size: 12px;"></td>
+                        </tr>
+                       
+                    </table>
                 </div>
 
                 <div class="text-center font-bold text-xl mb-6">
@@ -512,13 +521,7 @@
                 const pages = countPages();
 
                 // Update the page count in the header information
-                const pageInfoElement = document.querySelector('.grid.grid-cols-2.gap-4.text-sm');
-                if (pageInfoElement) {
-                    const pageCountCell = pageInfoElement.children[pageInfoElement.children.length - 1];
-                    if (pageCountCell) {
-                        pageCountCell.textContent = pages;
-                    }
-                }
+                document.getElementById('pageCount').textContent = pages;
             }, 500);
         }
     </script>
